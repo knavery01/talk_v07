@@ -129,6 +129,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+          color: Color(0xFFCAFFD8),
           padding: EdgeInsets.only(top: 40.0),
           child: Column(
             children: <Widget>[

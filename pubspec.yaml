@@ -57,6 +57,19 @@ flutter:
    - assets/images/logo.png
    - assets/images/empty.png
    - assets/images/post_banner.jpg
+   - assets/images/talkicon.png
+   - assets/images/eng1.png
+   - assets/images/china.png
+   - assets/images/india.png
+   - assets/images/japan.png
+   - assets/images/korea.png
+   - assets/images/laos.png
+   - assets/images/malay1.png
+   - assets/images/myanmar.png
+   - assets/images/russia.png
+   - assets/images/vietnam.png
+   - assets/images/profile.jpg
+   - assets/images/profile.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

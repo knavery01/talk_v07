@@ -13,8 +13,8 @@ class LandingPage extends StatelessWidget {
     );
 
     final logo = Container(
-      height: 100.0,
-      width: 100.0,
+      height: 120.0,
+      width: 120.0,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AvailableImages.appLogo,
@@ -36,9 +36,9 @@ class LandingPage extends StatelessWidget {
         Text(
           AppConfig.appTagline,
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w500
+              color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.w500
           ),
         )
       ],
@@ -87,6 +87,7 @@ class LandingPage extends StatelessWidget {
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20.0,
+            color: Color(0xFF6699AA),
           ),
         ),
       ),
@@ -94,7 +95,7 @@ class LandingPage extends StatelessWidget {
 
     final buttons = Padding(
       padding: EdgeInsets.only(
-        top: 80.0,
+        top: 30.0,
         bottom: 30.0,
         left: 30.0,
         right: 30.0,
