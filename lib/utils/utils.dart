@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppConfig {
-  static const appName = "Heart String";
-  static const appTagline = "Find your perfect match";
+  static const appName = "Talk with me!";
+  static const appTagline = "Find your translator to talk with you.";
 }
 
 class AvailableFonts {
@@ -73,5 +73,5 @@ class AvailableImages {
   };
 
   static const homePage = const AssetImage('assets/images/home_page.png');  
-  static const appLogo = const AssetImage('assets/images/logo.png');  
+  static const appLogo = const AssetImage('assets/images/talkicon.png');
 }
