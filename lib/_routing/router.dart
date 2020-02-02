@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_social/_routing/routes.dart';
+
 import 'package:flutter_social/views/chat_details.dart';
 import 'package:flutter_social/views/home.dart';
 import 'package:flutter_social/views/landing.dart';
 import 'package:flutter_social/views/languages.dart';
 import 'package:flutter_social/views/login.dart';
+import 'package:flutter_social/views/tabs/edit.dart';
 import 'package:flutter_social/views/register.dart';
 import 'package:flutter_social/views/reset_password.dart';
 import 'package:flutter_social/views/user_details.dart';
@@ -23,6 +25,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => RegisterPage());
     case resetPasswordViewRoute:
       return MaterialPageRoute(builder: (context) => ResetPasswordPage());
+    case EditViewRoute:
+      return MaterialPageRoute(builder: (context) => EditPage());
     case chatDetailsViewRoute:
       return MaterialPageRoute(builder: (context) => ChatDetailsPage(userId: settings.arguments));
     case userDetailsViewRoute:
