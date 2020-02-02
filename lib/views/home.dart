@@ -23,8 +23,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     FeedsPage(),
     ChatsPage(),
     NotificationsPage(),
-    LanguagesPage(),
-    ProfilePage(),
+    EditPage(),
   ];
 
 
@@ -63,13 +62,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           icon: Icon(LineIcons.bell),
           title: Text(
             'Notifications',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(LineIcons.user),
-          title: Text(
-            'Profile',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
