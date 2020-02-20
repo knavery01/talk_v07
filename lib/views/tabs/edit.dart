@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'package:flutter_social/_routing/routes.dart';
 import 'package:path/path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EditPage extends StatefulWidget {
   @override
@@ -12,14 +15,14 @@ class EditPage extends StatefulWidget {
 
 class _EditPageState extends State<EditPage> {
   File _image;
-
-  Widget _buildImage() {
-    if (_image != null) {
-      return Image.file(_image);
-    } else {
-      return Text('Take an image to start', style: TextStyle(fontSize: 18.0));
-    }
-  }
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+//  Widget _buildImage() {
+//    if (_image != null) {
+//      return Image.file(_image);
+//    } else {
+//      return Text('Take an image to start', style: TextStyle(fontSize: 18.0));
+//    }
+//  }
 
 
   Future<void> captureImage(ImageSource imageSource) async {
@@ -38,20 +41,25 @@ class _EditPageState extends State<EditPage> {
 
 
 
-    Future getImage() async {
-      var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-
-      setState(() {
-        _image = image;
-        print('Image Path $_image');
-      });
-    }
+//    Future getImage() async {
+//      var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+//
+//      setState(() {
+//        _image = image;
+//        print('Image Path $_image');
+//      });
+//    }
 
     Future uploadPic(BuildContext context) async{
+      final FirebaseStorage _storage =
+      FirebaseStorage(storageBucket: 'gs://talkwithme-74c93.appspot.com');
       String fileName = basename(_image.path);
-      StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(fileName);
+      String filePath = 'images/${DateTime.now()}.png';
+      StorageReference firebaseStorageRef = _storage.ref().child(filePath);
       StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
       StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+
+
       setState(() {
         print("Profile Picture uploaded");
         Scaffold.of(context).showSnackBar(SnackBar(content: Text('Profile Picture Uploaded')));
@@ -92,6 +100,11 @@ class _EditPageState extends State<EditPage> {
           });
     }
 
+    void signOut(BuildContext context) {
+      _auth.signOut();
+      Navigator.pushNamed(context, loginViewRoute);
+    }
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -104,7 +117,7 @@ class _EditPageState extends State<EditPage> {
       body: Builder(
         builder: (context) =>  Container(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SizedBox(
                 height: 20.0,
@@ -112,6 +125,7 @@ class _EditPageState extends State<EditPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  SizedBox(width: 50.0,),
                   Align(
                     alignment: Alignment.center,
                     child: CircleAvatar(
@@ -124,10 +138,7 @@ class _EditPageState extends State<EditPage> {
                           child: (_image!=null)?Image.file(
                             _image,
                             fit: BoxFit.fill,
-                          ):Image.network(
-                            "https://images.unsplash.com/photo-1502164980785-f8aa41d53611?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                            fit: BoxFit.fill,
-                          ),
+                          ):Image.asset('assets/images/profile.png'),
                         ),
                       ),
                     ),
@@ -152,7 +163,7 @@ class _EditPageState extends State<EditPage> {
                 height: 20.0,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Align(
                     alignment: Alignment.centerLeft,
@@ -294,6 +305,19 @@ class _EditPageState extends State<EditPage> {
                   RaisedButton(
                     color: Color(0xff476cfb),
                     onPressed: () {
+                      uploadPic(context);
+                    },
+
+                    elevation: 4.0,
+                    splashColor: Colors.blueGrey,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white, fontSize: 16.0),
+                    ),
+                  ),
+                  RaisedButton(
+                    color: Color(0xff476cfb),
+                    onPressed: () {
                       Navigator.of(context).pop();
                     },
                     elevation: 4.0,
@@ -306,13 +330,13 @@ class _EditPageState extends State<EditPage> {
                   RaisedButton(
                     color: Color(0xff476cfb),
                     onPressed: () {
-                      uploadPic(context);
+                      signOut(context);
                     },
 
                     elevation: 4.0,
                     splashColor: Colors.blueGrey,
                     child: Text(
-                      'Submit',
+                      'Logout',
                       style: TextStyle(color: Colors.white, fontSize: 16.0),
                     ),
                   ),

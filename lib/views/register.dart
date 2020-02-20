@@ -1,14 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/_routing/routes.dart';
 import 'package:flutter_social/utils/colors.dart';
 import 'package:line_icons/line_icons.dart';
 
 class RegisterPage extends StatefulWidget {
+
+  RegisterPage({Key key}) : super(key: key);
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmpasswordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController telController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   int _genderRadioBtnVal = -1;
 
@@ -36,6 +46,22 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
 
+    signUp() {
+      String email = emailController.text.trim();
+      String password = passwordController.text.trim();
+      String confirmPassword = confirmpasswordController.text.trim();
+      if (password == confirmPassword && password.length >= 6) {
+        _auth.createUserWithEmailAndPassword(email: email, password: password).then((user) {
+          print("Sign up user successful.");
+          Navigator.of(context).pushNamed(loginViewRoute);
+        }).catchError((error) {
+          print(error.message);
+        });
+      } else {
+        print("Password and Confirm-password is not match.");
+      }
+    }
+
     final pageTitle = Container(
       child: Text(
         "Tell us about you.",
@@ -51,24 +77,64 @@ class _RegisterPageState extends State<RegisterPage> {
       height: 30.0,
     );
 
-    final registerForm = Padding(
-      padding: EdgeInsets.only(top: 30.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: <Widget>[
-            _buildFormField('Name', LineIcons.user),
-            formFieldSpacing,
-            _buildFormField('Email Address', LineIcons.envelope),
-            formFieldSpacing,
-            _buildFormField('Phone Number', LineIcons.mobile_phone),
-            formFieldSpacing,
-            _buildFormField('Password', LineIcons.lock),
-            formFieldSpacing,
-          ],
-        ),
-      ),
-    );
+//    final registerForm = Padding(
+//      padding: EdgeInsets.only(top: 30.0),
+//      child: Form(
+//        key: _formKey,
+//        child: Column(
+//          children: <Widget>[
+//            _buildFormField(nameController,'Name', LineIcons.user),
+//            formFieldSpacing,
+//            _buildFormField(emailController,'Email Address', LineIcons.envelope),
+//            formFieldSpacing,
+//            _buildFormField(telController,'Phone Number', LineIcons.mobile_phone),
+//            formFieldSpacing,
+//            _buildFormField(passwordController,'Password', LineIcons.lock),
+//            formFieldSpacing,
+//            _buildFormField(confirmpasswordController,'Confirm password', LineIcons.lock),
+//            formFieldSpacing,
+//          ],
+//        ),
+//      ),
+//    );
+
+    Container buildTextFieldEmail() {
+      return Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+              color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+          child: TextField(
+            controller: emailController,
+              decoration: InputDecoration.collapsed(hintText: "Email"),
+              keyboardType: TextInputType.emailAddress,
+              style: TextStyle(fontSize: 18)));
+    }
+
+    Container buildTextFieldPassword() {
+      return Container(
+          padding: EdgeInsets.all(12),
+          margin: EdgeInsets.only(top: 12),
+          decoration: BoxDecoration(
+              color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+          child: TextField(
+            controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration.collapsed(hintText: "Password"),
+              style: TextStyle(fontSize: 18)));
+    }
+
+    Container buildTextFieldPasswordConfirm() {
+      return Container(
+          padding: EdgeInsets.all(12),
+          margin: EdgeInsets.only(top: 12),
+          decoration: BoxDecoration(
+              color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+          child: TextField(
+            controller: confirmpasswordController,
+              obscureText: true,
+              decoration: InputDecoration.collapsed(hintText: "Re-password"),
+              style: TextStyle(fontSize: 18)));
+    }
 
     final gender = Padding(
       padding: EdgeInsets.only(top: 0.0),
@@ -112,7 +178,9 @@ class _RegisterPageState extends State<RegisterPage> {
           elevation: 10.0,
           shadowColor: Colors.white70,
           child: MaterialButton(
-            onPressed: () => Navigator.of(context).pushNamed(homeViewRoute),
+            onPressed: () {
+              signUp();
+            },
             child: Text(
               'CREATE ACCOUNT',
               style: TextStyle(
@@ -129,6 +197,14 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
           color: Color(0xFFCAFFD8),
           padding: EdgeInsets.only(top: 40.0),
           child: Column(
@@ -140,7 +216,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     pageTitle,
-                    registerForm,
+                    buildTextFieldEmail(),
+                    buildTextFieldPassword(),
+                    buildTextFieldPasswordConfirm(),
                     gender,
                     submitBtn
                   ],
@@ -153,8 +231,9 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _buildFormField(String label, IconData icon) {
+  Widget _buildFormField(controller, String label, IconData icon) {
     return TextFormField(
+      controller: controller,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: Colors.black),

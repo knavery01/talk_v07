@@ -4,6 +4,7 @@ import 'package:flutter_social/views/languages.dart';
 import 'package:flutter_social/views/tabs/edit.dart';
 
 import 'package:flutter_social/views/tabs/chats.dart';
+import 'package:flutter_social/views/tabs/edit2.dart';
 import 'package:flutter_social/views/tabs/feeds.dart';
 import 'package:flutter_social/views/tabs/notifications.dart';
 import 'package:flutter_social/views/tabs/profile.dart';

@@ -1,18 +1,63 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/_routing/routes.dart';
 import 'package:flutter_social/utils/colors.dart';
+import 'package:flutter_social/views/home.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
   @override
+
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
+  initState() {
+    super.initState();
+    checkAuth(context);
+  }
+
+
+  Future<FirebaseUser> signIn( )async {
+    final FirebaseUser user = await _auth.signInWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    ).then((user) {
+      //print("signed in ${user.email}");
+      checkAuth(context);
+      Navigator.pushNamed(context, languagesViewRoute);// add here
+    }).catchError((error) {
+      print(error.message);
+      scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(error.message, style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.red,
+      ));
+    });
+  }
+
+
+
+  @override
+  Future checkAuth(BuildContext context) async {
+    FirebaseUser user = await _auth.currentUser();
+    if (user != null) {
+      print("Already singed-in with");
+      Navigator.pushNamed(context, homeViewRoute);
+    }
+  }
+
+
+
   Widget build(BuildContext context) {
     // Change Status Bar Color
     SystemChrome.setSystemUIOverlayStyle(
@@ -41,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final emailField = TextFormField(
+      controller: emailController,
       decoration: InputDecoration(
         labelText: 'Email Address',
         labelStyle: TextStyle(color: Colors.white),
@@ -61,6 +107,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final passwordField = TextFormField(
+      controller: passwordController,
       decoration: InputDecoration(
         labelText: 'Password',
         labelStyle: TextStyle(color: Colors.white),
@@ -102,7 +149,9 @@ class _LoginPageState extends State<LoginPage> {
       ),
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => Navigator.pushNamed(context, languagesViewRoute),
+        onPressed: () {
+          signIn();
+          },
         color: Colors.white,
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(7.0),
@@ -163,6 +212,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
+      key: scaffoldKey,
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.only(top: 150.0, left: 30.0, right: 30.0),
@@ -182,5 +232,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+
+
   }
 }
