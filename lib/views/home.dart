@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_social/utils/colors.dart';
+import 'package:flutter_social/utils/translator.dart';
 import 'package:flutter_social/views/languages.dart';
 import 'package:flutter_social/views/tabs/edit.dart';
 
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ChatsPage(),
     NotificationsPage(),
     EditPage(),
+    TranslatorPage(),
   ];
 
 
@@ -70,6 +72,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           icon: Icon(LineIcons.user),
           title: Text(
             'Profile',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(LineIcons.user),
+          title: Text(
+            'Translator',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
