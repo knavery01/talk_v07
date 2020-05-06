@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/_routing/routes.dart';
 import 'package:flutter_social/utils/colors.dart';
+import 'package:flutter_social/views/login.dart';
 import 'package:line_icons/line_icons.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -47,14 +50,29 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     signUp() {
+      String name = nameController.text.trim();
+      String tel =telController.text.trim();
       String email = emailController.text.trim();
       String password = passwordController.text.trim();
       String confirmPassword = confirmpasswordController.text.trim();
       if (password == confirmPassword && password.length >= 6) {
-        _auth.createUserWithEmailAndPassword(email: email, password: password).then((user) {
-          print("Sign up user successful.");
-          Navigator.of(context).pushNamed(loginViewRoute);
-        }).catchError((error) {
+        _auth.createUserWithEmailAndPassword(email: email, password: password).then((currentUser) => Firestore.instance
+            .collection("users")
+            .document(currentUser.user.uid)
+            .setData({
+          "uid": currentUser.user.uid,
+          "name": name,
+          "tel": tel,
+          "email": email,
+        })).then((result) => {
+        print("Password and Confirm-password is not match."),
+        Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+        builder: (context) => LoginPage()),(_) => false),
+
+        })
+            .catchError((error) {
           print(error.message);
         });
       } else {
@@ -98,15 +116,41 @@ class _RegisterPageState extends State<RegisterPage> {
 //      ),
 //    );
 
-    Container buildTextFieldEmail() {
+    Container buildTextFieldName() {
       return Container(
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
               color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
           child: TextField(
-            controller: emailController,
+              controller: nameController,
+              decoration: InputDecoration.collapsed(hintText: "name"),
+              keyboardType: TextInputType.text,
+              style: TextStyle(fontSize: 18)));
+    }
+
+    Container buildTextFieldEmail() {
+      return Container(
+          padding: EdgeInsets.all(12),
+          margin: EdgeInsets.only(top: 12),
+          decoration: BoxDecoration(
+              color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+          child: TextField(
+              controller: emailController,
               decoration: InputDecoration.collapsed(hintText: "Email"),
               keyboardType: TextInputType.emailAddress,
+              style: TextStyle(fontSize: 18)));
+    }
+
+    Container buildTextFieldTel() {
+      return Container(
+          padding: EdgeInsets.all(12),
+          margin: EdgeInsets.only(top: 12),
+          decoration: BoxDecoration(
+              color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+          child: TextField(
+              controller: telController,
+              decoration: InputDecoration.collapsed(hintText: "Tel"),
+              keyboardType: TextInputType.phone,
               style: TextStyle(fontSize: 18)));
     }
 
@@ -197,10 +241,6 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
           width: MediaQuery
               .of(context)
               .size
@@ -216,7 +256,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     pageTitle,
+                    buildTextFieldName(),
                     buildTextFieldEmail(),
+                    buildTextFieldTel(),
                     buildTextFieldPassword(),
                     buildTextFieldPasswordConfirm(),
                     gender,

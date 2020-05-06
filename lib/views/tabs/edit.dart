@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_social/_routing/routes.dart';
 import 'package:path/path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,6 +24,24 @@ class _EditPageState extends State<EditPage> {
 //      return Text('Take an image to start', style: TextStyle(fontSize: 18.0));
 //    }
 //  }
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  Firestore firestore = Firestore.instance;
+
+
+  String name;
+  String email;
+  String tel;
+
+  void _onPressed() async{
+    var firebaseUser = await FirebaseAuth.instance.currentUser();
+    firestore.collection("users").document(firebaseUser.uid).get().then((value){
+      print(value.data);
+       this.name = value.data["name"];
+       email = value.data["email"];
+       tel = value.data["tel"];
+    });
+  }
+
 
 
   Future<void> captureImage(ImageSource imageSource) async {
@@ -35,6 +54,10 @@ class _EditPageState extends State<EditPage> {
       print(e);
     }
   }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -152,8 +175,6 @@ class _EditPageState extends State<EditPage> {
                       ),
                       onPressed: () {
                         _showActionSheet();
-
-
                       },
                     ),
                   ),
@@ -163,10 +184,10 @@ class _EditPageState extends State<EditPage> {
                 height: 20.0,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Align(
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.topLeft,
                     child: Container(
                       child: Column(
                         children: <Widget>[
@@ -306,6 +327,7 @@ class _EditPageState extends State<EditPage> {
                     color: Color(0xff476cfb),
                     onPressed: () {
                       uploadPic(context);
+                      _onPressed();
                     },
 
                     elevation: 4.0,
@@ -349,4 +371,7 @@ class _EditPageState extends State<EditPage> {
       ),
     );
   }
+
+
+
 }

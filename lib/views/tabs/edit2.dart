@@ -1,213 +1,388 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
+import 'package:flutter_social/views/login.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
-import 'package:firebase_storage/firebase_storage.dart';
+final String _kanit = 'Kanit';
 
-import 'package:flutter/services.dart';
-
-class EDPage extends StatefulWidget {
+class EditProfile extends StatefulWidget {
   @override
-  _EDPageState createState() => _EDPageState();
+  _EditProfileState createState() => _EditProfileState();
 }
 
-class _EDPageState extends State<EDPage> {
+class _EditProfileState extends State<EditProfile> {
 
-  String fileType = '';
-  File file;
-  String fileName = '';
-  String operationText = '';
-  bool isUploaded = true;
-  String result = '';
+  TextEditingController emailController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController telController = TextEditingController();
+  File _image;
+  String image;
+  String userID = '';
+  List<DocumentSnapshot> snapshots;
+  String img, name, tel, email;
 
-  Future filePicker(BuildContext context) async {
+  inputData() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseUser user = await auth.currentUser();
+    final uid = user.uid.toString();
+    print(uid);
+    setState(() {
+      userID = uid.toString();
+    });
+  }
+
+  _signout() {
+    FirebaseAuth.instance
+        .signOut()
+        .then((result) => Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginPage())))
+        .catchError((err) => print(err));
+  }
+
+  Future<void> captureImage(ImageSource imageSource) async {
     try {
-      if (fileType == 'image') {
-        file = await FilePicker.getFile(type: FileType.IMAGE);
-        setState(() {
-          fileName = p.basename(file.path);
-        });
-        print(fileName);
-        _uploadFile(file, fileName);
-      }
-      if (fileType == 'audio') {
-        file = await FilePicker.getFile(type: FileType.AUDIO);
-        fileName = p.basename(file.path);
-        setState(() {
-          fileName = p.basename(file.path);
-        });
-        print(fileName);
-        _uploadFile(file, fileName);
-      }
-      if (fileType == 'video') {
-        file = await FilePicker.getFile(type: FileType.VIDEO);
-        fileName = p.basename(file.path);
-        setState(() {
-          fileName = p.basename(file.path);
-        });
-        print(fileName);
-        _uploadFile(file, fileName);
-      }
-      if (fileType == 'pdf') {
-        file = await FilePicker.getFile(type: FileType.CUSTOM, fileExtension: 'pdf');
-        fileName = p.basename(file.path);
-        setState(() {
-          fileName = p.basename(file.path);
-        });
-        print(fileName);
-        _uploadFile(file, fileName);
-      }
-      if (fileType == 'others') {
-        file = await FilePicker.getFile(type: FileType.ANY);
-        fileName = p.basename(file.path);
-        setState(() {
-          fileName = p.basename(file.path);
-        });
-        print(fileName);
-        _uploadFile(file, fileName);
-      }
-    } on PlatformException catch (e) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Sorry...'),
-              content: Text('Unsupported exception: $e'),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          }
-      );
+      final imageFile = await ImagePicker.pickImage(source: imageSource);
+      setState(() {
+        _image = imageFile;
+      });
+    } catch (e) {
+      print(e);
     }
   }
 
-  Future<void> _uploadFile(File file, String filename) async {
-    StorageReference storageReference;
-    if (fileType == 'image') {
-      storageReference =
-          FirebaseStorage.instance.ref().child("images/$filename");
-    }
-    if (fileType == 'audio') {
-      storageReference =
-          FirebaseStorage.instance.ref().child("audio/$filename");
-    }
-    if (fileType == 'video') {
-      storageReference =
-          FirebaseStorage.instance.ref().child("videos/$filename");
-    }
-    if (fileType == 'pdf') {
-      storageReference =
-          FirebaseStorage.instance.ref().child("pdf/$filename");
-    }
-    if (fileType == 'others') {
-      storageReference =
-          FirebaseStorage.instance.ref().child("others/$filename");
-    }
-    final StorageUploadTask uploadTask = storageReference.putFile(file);
-    final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
-    final String url = (await downloadUrl.ref.getDownloadURL());
-    print("URL is $url");
+  void _showActionSheet() {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // 设置最小的弹出
+              children: <Widget>[
+                new ListTile(
+                  leading: new Icon(Icons.photo_camera),
+                  title: new Text("Camera"),
+                  onTap: () async {
+                    captureImage(ImageSource.camera);
+                    Navigator.of(context).pop();
+                  },
+                ),
+                new ListTile(
+                  leading: new Icon(Icons.photo_library),
+                  title: new Text("Gallery"),
+                  onTap: () async {
+                    captureImage(ImageSource.gallery);
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  @override
+  void initState() {
+    inputData();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black45,
-      body: Center(
-        child: ListView(
-          children: <Widget>[
-            ListTile(
-              title: Text('Image', style: TextStyle(color: Colors.white),),
-              leading: Icon(Icons.image, color: Colors.redAccent,),
-              onTap: () {
-                setState(() {
-                  fileType = 'image';
-                });
-                filePicker(context);
-              },
-            ),
-            ListTile(
-              title: Text('Audio', style: TextStyle(color: Colors.white),),
-              leading: Icon(Icons.audiotrack, color: Colors.redAccent,),
-              onTap: () {
-                setState(() {
-                  fileType = 'audio';
-                });
-                filePicker(context);
-              },
-            ),
-            ListTile(
-              title: Text('Video', style: TextStyle(color: Colors.white),),
-              leading: Icon(Icons.video_label, color: Colors.redAccent,),
-              onTap: () {
-                setState(() {
-                  fileType = 'video';
-                });
-                filePicker(context);
-              },
-            ),
-            ListTile(
-              title: Text('PDF', style: TextStyle(color: Colors.white),),
-              leading: Icon(Icons.pages, color: Colors.redAccent,),
-              onTap: () {
-                setState(() {
-                  fileType = 'pdf';
-                });
-                filePicker(context);
-              },
-            ),
-            ListTile(
-              title: Text('Others', style: TextStyle(color: Colors.white),),
-              leading: Icon(Icons.attach_file, color: Colors.redAccent,),
-              onTap: () {
-                setState(() {
-                  fileType = 'others';
-                });
-                filePicker(context);
-              },
-            ),
-            SizedBox(height: 50,),
-            Text(result, style: TextStyle(color: Colors.blue),)
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: new Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(
-                  Icons.cloud_upload
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(
-                  Icons.view_list
-              ),
-              onPressed: () {
-//                Navigator.push(
-//                    context,
-//                    MaterialPageRoute(builder: (context) => ImageViewer())
-//                );
-              },
-            )
-          ],
-        ),
-      ),
       appBar: AppBar(
-        title: Text('Firestorage Demo', style: TextStyle(color: Colors.white),),
+        title: Text(
+          'โปรไฟล์',
+          style: TextStyle(fontFamily: _kanit),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.greenAccent,
+      ),
+      body: StreamBuilder(
+        stream:
+        Firestore.instance.collection('users').document(userID).snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          return profile(
+            email: snapshot.data['email'],
+            name: snapshot.data['name'],
+            img: snapshot.data['imgProfile'],
+            tel: snapshot.data['tel'],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget profile({img, name, tel, email}) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: 12),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(width: 50.0,),
+                  Container(
+                    width: 140,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 5),
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          img,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      FontAwesomeIcons.camera,
+                      size: 30.0,
+                    ),
+                    onPressed: () {
+                      _showActionSheet();
+                    },
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 12),
+//            Row(
+//              mainAxisAlignment: MainAxisAlignment.center,
+//              children: <Widget>[
+//                Text(firstname,style: TextStyle(fontFamily: _kanit, fontSize: 22.0),),
+//                SizedBox(width: 20.0),
+//                Text(lastname,style: TextStyle(fontFamily: _kanit, fontSize: 22.0),),
+//              ],
+//            ),
+            SizedBox(height: 12),
+            _form(
+              title: 'ชื่อ',
+              content: name,
+            ),
+            _form(
+              title: 'tel',
+              content: tel,
+            ),
+            _form(
+              title: 'อีเมลล์',
+              content: email,
+            ),
+//            buildTextFieldName(),
+//            buildTextFieldTel(),
+//            buildTextFieldEmail(),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        width:100.0,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(
+                            'Save',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: _kanit,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          onPressed: _signout,
+                        ),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 20.0,
+                              // has the effect of softening the shadow
+                              spreadRadius: 4.0,
+                              // has the effect of extending the shadow
+                              offset: Offset(
+                                8.0, // horizontal, move right 10
+                                8.0, // vertical, move down 10
+                              ),
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.green,
+                        ),
+                      ),
+                      SizedBox(width: 20.0,),
+                      Container(
+                        width: 100.0,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: _kanit,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          onPressed: _signout,
+                        ),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 20.0,
+                              // has the effect of softening the shadow
+                              spreadRadius: 4.0,
+                              // has the effect of extending the shadow
+                              offset: Offset(
+                                8.0, // horizontal, move right 10
+                                8.0, // vertical, move down 10
+                              ),
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.0,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        width: 100.0,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(
+                            'Logout',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: _kanit,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          onPressed: _signout,
+                        ),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 20.0,
+                              // has the effect of softening the shadow
+                              spreadRadius: 4.0,
+                              // has the effect of extending the shadow
+                              offset: Offset(
+                                8.0, // horizontal, move right 10
+                                8.0, // vertical, move down 10
+                              ),
+                            )
+                          ],
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Container buildTextFieldName() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            controller: nameController,
+            decoration: InputDecoration.collapsed(hintText: name),
+            keyboardType: TextInputType.text,
+            style: TextStyle(fontSize: 18,color: Colors.grey)));
+  }
+
+  Container buildTextFieldEmail() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 12),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            controller: emailController,
+            decoration: InputDecoration.collapsed(hintText: email),
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  String aa = "aaa";
+  Container buildTextFieldTel() {
+    return Container(
+        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 12),
+        decoration: BoxDecoration(
+            color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
+        child: TextField(
+            controller: telController,
+            decoration: InputDecoration.collapsed(hintText: 'tel'),
+            keyboardType: TextInputType.phone,
+            style: TextStyle(fontSize: 18)));
+  }
+
+  Widget _form({
+    title,
+    content,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(
+              fontFamily: _kanit,
+              fontWeight: FontWeight.bold,
+              fontSize: 22.0,
+            ),
+          ),
+          Text(
+            content,
+            style: TextStyle(
+              fontFamily: _kanit,
+              fontSize: 18.0,
+              color: Colors.black54,
+            ),
+          ),
+          Divider(
+            thickness: 2,
+            color: Colors.black45,
+          ),
+        ],
       ),
     );
   }
