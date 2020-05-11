@@ -121,46 +121,47 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget profile({img, name, tel, email}) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 12),
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(width: 50.0,),
-                  Container(
-                    width: 140,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey, width: 5),
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          img,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 12),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(width: 50.0,),
+                    Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 5),
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            img,
+                          ),
+                          fit: BoxFit.cover,
                         ),
-                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      FontAwesomeIcons.camera,
-                      size: 30.0,
+                    IconButton(
+                      icon: Icon(
+                        FontAwesomeIcons.camera,
+                        size: 30.0,
+                      ),
+                      onPressed: () {
+                        _showActionSheet();
+                      },
                     ),
-                    onPressed: () {
-                      _showActionSheet();
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 12),
+              SizedBox(height: 12),
 //            Row(
 //              mainAxisAlignment: MainAxisAlignment.center,
 //              children: <Widget>[
@@ -169,151 +170,153 @@ class _EditProfileState extends State<EditProfile> {
 //                Text(lastname,style: TextStyle(fontFamily: _kanit, fontSize: 22.0),),
 //              ],
 //            ),
-            SizedBox(height: 12),
-            _form(
-              title: 'ชื่อ',
-              content: name,
-            ),
-            _form(
-              title: 'tel',
-              content: tel,
-            ),
-            _form(
-              title: 'อีเมลล์',
-              content: email,
-            ),
-//            buildTextFieldName(),
-//            buildTextFieldTel(),
-//            buildTextFieldEmail(),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        width:100.0,
-                        child: MaterialButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Text(
-                            'Save',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: _kanit,
-                              fontSize: 18.0,
+              SizedBox(height: 12),
+//            _form(
+//              title: 'ชื่อ',
+//              content: name,
+//            ),
+//            _form(
+//              title: 'tel',
+//              content: tel,
+//            ),
+//            _form(
+//              title: 'อีเมลล์',
+//              content: email,
+//            ),
+              buildTextFieldName(name),
+              buildTextFieldTel(tel),
+             buildTextFieldEmail(email),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width:100.0,
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
                             ),
-                          ),
-                          onPressed: _signout,
-                        ),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 20.0,
-                              // has the effect of softening the shadow
-                              spreadRadius: 4.0,
-                              // has the effect of extending the shadow
-                              offset: Offset(
-                                8.0, // horizontal, move right 10
-                                8.0, // vertical, move down 10
+                            child: Text(
+                              'Save',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: _kanit,
+                                fontSize: 18.0,
                               ),
-                            )
-                          ],
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.green,
-                        ),
-                      ),
-                      SizedBox(width: 20.0,),
-                      Container(
-                        width: 100.0,
-                        child: MaterialButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: _kanit,
-                              fontSize: 18.0,
                             ),
+                            onPressed: _signout,
                           ),
-                          onPressed: _signout,
-                        ),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 20.0,
-                              // has the effect of softening the shadow
-                              spreadRadius: 4.0,
-                              // has the effect of extending the shadow
-                              offset: Offset(
-                                8.0, // horizontal, move right 10
-                                8.0, // vertical, move down 10
-                              ),
-                            )
-                          ],
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.orange,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20.0,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        width: 100.0,
-                        child: MaterialButton(
-                          shape: RoundedRectangleBorder(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 20.0,
+                                // has the effect of softening the shadow
+                                spreadRadius: 4.0,
+                                // has the effect of extending the shadow
+                                offset: Offset(
+                                  8.0, // horizontal, move right 10
+                                  8.0, // vertical, move down 10
+                                ),
+                              )
+                            ],
                             borderRadius: BorderRadius.circular(30),
+                            color: Colors.green,
                           ),
-                          child: Text(
-                            'Logout',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: _kanit,
-                              fontSize: 18.0,
+                        ),
+                        SizedBox(width: 20.0,),
+                        Container(
+                          width: 100.0,
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
                             ),
-                          ),
-                          onPressed: _signout,
-                        ),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 20.0,
-                              // has the effect of softening the shadow
-                              spreadRadius: 4.0,
-                              // has the effect of extending the shadow
-                              offset: Offset(
-                                8.0, // horizontal, move right 10
-                                8.0, // vertical, move down 10
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: _kanit,
+                                fontSize: 18.0,
                               ),
-                            )
-                          ],
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.red,
+                            ),
+                            onPressed: _signout,
+                          ),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 20.0,
+                                // has the effect of softening the shadow
+                                spreadRadius: 4.0,
+                                // has the effect of extending the shadow
+                                offset: Offset(
+                                  8.0, // horizontal, move right 10
+                                  8.0, // vertical, move down 10
+                                ),
+                              )
+                            ],
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.orange,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                    SizedBox(height: 20.0,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 100.0,
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Text(
+                              'Logout',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: _kanit,
+                                fontSize: 18.0,
+                              ),
+                            ),
+                            onPressed: _signout,
+                          ),
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 20.0,
+                                // has the effect of softening the shadow
+                                spreadRadius: 4.0,
+                                // has the effect of extending the shadow
+                                offset: Offset(
+                                  8.0, // horizontal, move right 10
+                                  8.0, // vertical, move down 10
+                                ),
+                              )
+                            ],
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Container buildTextFieldName() {
+  Container buildTextFieldName(name) {
+    nameController.text = name;
     return Container(
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -322,10 +325,11 @@ class _EditProfileState extends State<EditProfile> {
             controller: nameController,
             decoration: InputDecoration.collapsed(hintText: name),
             keyboardType: TextInputType.text,
-            style: TextStyle(fontSize: 18,color: Colors.grey)));
+            style: TextStyle(fontSize: 18,)));
   }
 
-  Container buildTextFieldEmail() {
+  Container buildTextFieldEmail(email) {
+    emailController.text = email;
     return Container(
         padding: EdgeInsets.all(12),
         margin: EdgeInsets.only(top: 12),
@@ -338,8 +342,9 @@ class _EditProfileState extends State<EditProfile> {
             style: TextStyle(fontSize: 18)));
   }
 
-  String aa = "aaa";
-  Container buildTextFieldTel() {
+
+  Container buildTextFieldTel(tel) {
+    telController.text = tel;
     return Container(
         padding: EdgeInsets.all(12),
         margin: EdgeInsets.only(top: 12),
