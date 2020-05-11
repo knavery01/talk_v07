@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_social/utils/colors.dart';
-import 'package:flutter_social/utils/translator.dart';
+import 'file:///C:/Users/UMARU/AndroidStudioProjects/talk_v08/lib/views/tabs/translator.dart';
 import 'package:flutter_social/views/languages.dart';
 import 'package:flutter_social/views/tabs/edit.dart';
 
@@ -9,6 +9,7 @@ import 'package:flutter_social/views/tabs/edit2.dart';
 import 'package:flutter_social/views/tabs/feeds.dart';
 import 'package:flutter_social/views/tabs/notifications.dart';
 import 'package:flutter_social/views/tabs/profile.dart';
+import 'package:flutter_social/views/tabs/tran.dart';
 
 import 'package:line_icons/line_icons.dart';
 
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ChatsPage(),
     NotificationsPage(),
     EditPage(),
-    TranslatorPage(),
+    MyApp(),
     EditProfile(),
   ];
 
