@@ -303,8 +303,10 @@ class _EditProfileState extends State<EditProfile> {
                             color: Colors.red,
                           ),
                         ),
+
                       ],
                     ),
+                    SizedBox(height: 20.0,),
                   ],
                 ),
               ),

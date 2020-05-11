@@ -9,7 +9,7 @@ import 'package:flutter_social/views/tabs/edit2.dart';
 import 'package:flutter_social/views/tabs/feeds.dart';
 import 'package:flutter_social/views/tabs/notifications.dart';
 import 'package:flutter_social/views/tabs/profile.dart';
-import 'package:flutter_social/views/test.dart';
+
 import 'package:line_icons/line_icons.dart';
 
 
