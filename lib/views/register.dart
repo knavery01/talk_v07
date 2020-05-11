@@ -55,15 +55,17 @@ class _RegisterPageState extends State<RegisterPage> {
       String email = emailController.text.trim();
       String password = passwordController.text.trim();
       String confirmPassword = confirmpasswordController.text.trim();
+      String img ="https://firebasestorage.googleapis.com/v0/b/talkwithme-74c93.appspot.com/o/images%2Fprofile.png?alt=media&token=12ccd588-549e-43d0-a314-73f01528c29e";
       if (password == confirmPassword && password.length >= 6) {
         _auth.createUserWithEmailAndPassword(email: email, password: password).then((currentUser) => Firestore.instance
-            .collection("users")
+            .collection("user1")
             .document(currentUser.user.uid)
             .setData({
           "uid": currentUser.user.uid,
           "name": name,
           "tel": tel,
           "email": email,
+          "imgProfile":img,
         })).then((result) => {
         print("Password and Confirm-password is not match."),
         Navigator.pushAndRemoveUntil(

@@ -104,7 +104,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
       body: StreamBuilder(
         stream:
-        Firestore.instance.collection('users').document(userID).snapshots(),
+        Firestore.instance.collection('user1').document(userID).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
@@ -131,32 +131,38 @@ class _EditProfileState extends State<EditProfile> {
             children: <Widget>[
               SizedBox(height: 12),
               Center(
-                child: Row(
+                child:  Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(width: 50.0,),
-                    Container(
-                      width: 140,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 5),
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            img,
+                    Align(
+                      alignment: Alignment.center,
+                      child: CircleAvatar(
+                        radius: 80,
+                        backgroundColor: Colors.grey,
+                        child: ClipOval(
+                          child: new SizedBox(
+                            width: 150.0,
+                            height: 150.0,
+                            child: (_image!=null)?Image.file(
+                              _image,
+                              fit: BoxFit.fill,
+                            ):Image.network(img),
                           ),
-                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(
-                        FontAwesomeIcons.camera,
-                        size: 30.0,
+                    Padding(
+                      padding: EdgeInsets.only(top: 60.0),
+                      child: IconButton(
+                        icon: Icon(
+                          FontAwesomeIcons.camera,
+                          size: 30.0,
+                        ),
+                        onPressed: () {
+                          _showActionSheet();
+                        },
                       ),
-                      onPressed: () {
-                        _showActionSheet();
-                      },
                     ),
                   ],
                 ),
@@ -325,7 +331,11 @@ class _EditProfileState extends State<EditProfile> {
             color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
         child: TextField(
             controller: nameController,
-            decoration: InputDecoration.collapsed(hintText: name),
+            decoration: InputDecoration(
+              hintText: name,
+              prefixIcon: Icon(Icons.account_box),
+              labelText: "name",
+            ),
             keyboardType: TextInputType.text,
             style: TextStyle(fontSize: 18,)));
   }
@@ -339,7 +349,11 @@ class _EditProfileState extends State<EditProfile> {
             color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
         child: TextField(
             controller: emailController,
-            decoration: InputDecoration.collapsed(hintText: email),
+            decoration: InputDecoration(
+                hintText: email,
+              prefixIcon: Icon(Icons.mail),
+              labelText: "email",
+            ),
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(fontSize: 18)));
   }
@@ -354,7 +368,11 @@ class _EditProfileState extends State<EditProfile> {
             color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
         child: TextField(
             controller: telController,
-            decoration: InputDecoration.collapsed(hintText: 'tel'),
+            decoration: InputDecoration(
+              hintText: email,
+              prefixIcon: Icon(Icons.phone),
+              labelText: "tel",
+            ),
             keyboardType: TextInputType.phone,
             style: TextStyle(fontSize: 18)));
   }
