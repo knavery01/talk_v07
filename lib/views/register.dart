@@ -22,6 +22,39 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController telController = TextEditingController();
 
+  List catData; //collect data for dropdown
+  List<DropdownMenuItem<String>> catToDo = []; //bring data to dropdown
+  String catDataSelected; // keep data for dropdown select
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+
+    catData = [
+      'English',
+      'Chiness',
+      'Japan',
+      'Korea',
+      'Indonesia',
+    ];
+    for (int i = 0; i < catData.length; i++) {
+      catToDo.add(
+        DropdownMenuItem(
+          child: Text(
+            catData[i],
+            style: TextStyle(
+              color: Colors.blueGrey[300],
+            ),
+          ),
+          value: catData[i],
+        ),
+      );
+    }
+    //catDataSelected = catData[0];
+  }
+
   final _formKey = GlobalKey<FormState>();
   int _genderRadioBtnVal = -1;
 
@@ -49,16 +82,19 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
 
-    signUp() {
+    signUp(lang) {
+
       String name = nameController.text.trim();
       String tel =telController.text.trim();
       String email = emailController.text.trim();
       String password = passwordController.text.trim();
       String confirmPassword = confirmpasswordController.text.trim();
       String img ="https://firebasestorage.googleapis.com/v0/b/talkwithme-74c93.appspot.com/o/images%2Fprofile.png?alt=media&token=12ccd588-549e-43d0-a314-73f01528c29e";
+
+
       if (password == confirmPassword && password.length >= 6) {
         _auth.createUserWithEmailAndPassword(email: email, password: password).then((currentUser) => Firestore.instance
-            .collection("user1")
+            .collection("user2")
             .document(currentUser.user.uid)
             .setData({
           "uid": currentUser.user.uid,
@@ -66,6 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
           "tel": tel,
           "email": email,
           "imgProfile":img,
+          "lang":lang,
         })).then((result) => {
         print("Password and Confirm-password is not match."),
         Navigator.pushAndRemoveUntil(
@@ -97,26 +134,23 @@ class _RegisterPageState extends State<RegisterPage> {
       height: 30.0,
     );
 
-//    final registerForm = Padding(
-//      padding: EdgeInsets.only(top: 30.0),
-//      child: Form(
-//        key: _formKey,
-//        child: Column(
-//          children: <Widget>[
-//            _buildFormField(nameController,'Name', LineIcons.user),
-//            formFieldSpacing,
-//            _buildFormField(emailController,'Email Address', LineIcons.envelope),
-//            formFieldSpacing,
-//            _buildFormField(telController,'Phone Number', LineIcons.mobile_phone),
-//            formFieldSpacing,
-//            _buildFormField(passwordController,'Password', LineIcons.lock),
-//            formFieldSpacing,
-//            _buildFormField(confirmpasswordController,'Confirm password', LineIcons.lock),
-//            formFieldSpacing,
-//          ],
-//        ),
-//      ),
-//    );
+    final dp = Container(
+        color: Colors.yellow[50],
+      child: (
+        DropdownMenuItem(
+          child: DropdownButton(
+            hint: Text('Languages'),
+            items: catToDo,
+            value: catDataSelected,
+            isExpanded: true,
+            onChanged: (data) {
+              setState(() {
+                catDataSelected = data;
+              });
+            },
+          ),
+        )),
+      );
 
     Container buildTextFieldName() {
       return Container(
@@ -225,7 +259,19 @@ class _RegisterPageState extends State<RegisterPage> {
           shadowColor: Colors.white70,
           child: MaterialButton(
             onPressed: () {
-              signUp();
+              String lang;
+              if(catDataSelected == 'English'){
+                lang = 'English';
+              }else if(catDataSelected == 'Chiness'){
+                lang = 'Chiness';
+              }else if(catDataSelected == 'Japan'){
+                lang = 'Japan';
+              }else if(catDataSelected == 'Korea'){
+                lang = 'Korea';
+              }else if(catDataSelected == 'Indonesia'){
+                lang = 'Indonesia';
+              }
+              signUp(lang);
             },
             child: Text(
               'CREATE ACCOUNT',
@@ -264,6 +310,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     buildTextFieldPassword(),
                     buildTextFieldPasswordConfirm(),
                     gender,
+                    dp,
                     submitBtn
                   ],
                 ),

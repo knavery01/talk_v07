@@ -104,7 +104,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
       body: StreamBuilder(
         stream:
-        Firestore.instance.collection('user1').document(userID).snapshots(),
+        Firestore.instance.collection('user2').document(userID).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();

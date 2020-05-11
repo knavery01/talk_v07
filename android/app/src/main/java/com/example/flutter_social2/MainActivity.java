@@ -1,4 +1,4 @@
-package com.example.flutter_social;
+package com.example.flutter_social2;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

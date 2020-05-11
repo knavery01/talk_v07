@@ -34,6 +34,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156782509793:android:0fdf24269ba9f38517c1a0",
+        "android_client_info": {
+          "package_name": "com.example.flutter_social2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156782509793-49mmvul8p8ca71bmv88ogvjbuhiic21e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBRayZKwK55-VJKf1vuUNizBAcSzz3A5g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "156782509793-49mmvul8p8ca71bmv88ogvjbuhiic21e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
