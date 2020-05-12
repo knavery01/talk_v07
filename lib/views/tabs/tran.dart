@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_social/views/languages.dart';
 
 void main() => runApp(new MyApp());
 
@@ -30,12 +31,21 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Home"),
+        title: new Text("Translator"),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.search),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LanguagesPage()));
+          }
+          ),
+        ],
       ),
       body: ListPage(),
     );
   }
 }
+
+
 
 class ListPage extends StatefulWidget {
   @override
@@ -43,7 +53,7 @@ class ListPage extends StatefulWidget {
 }
 
 class _ListPageState extends State<ListPage> {
-
+  
   Future _data;
 
   Future getPost() async {
@@ -87,6 +97,8 @@ class _ListPageState extends State<ListPage> {
               ),
             title: Text(snapshot.data[index].data['name'],),
               onTap: () => navigateToDetail(snapshot.data[index]),
+              subtitle: Text(snapshot.data[index].data['lang'],),
+              trailing: Text(snapshot.data[index].data['status'],),
             );
             });
         }
@@ -113,10 +125,15 @@ class _DetailPageState extends State<DetailPage> {
       body: Container(
         child: Card(
           child: ListTile(
+            leading: CircleAvatar(
+              backgroundImage:
+              NetworkImage(
+                widget.post.data['imgProfile'],
+              ),
+            ),
             title: Text(widget.post.data['name']),
-            subtitle: Text(widget.post.data['email']),
-
-
+            subtitle: Text(widget.post.data['lang']),
+            trailing: Text(widget.post.data['status']),
           ),
         ),
       ),

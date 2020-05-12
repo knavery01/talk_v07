@@ -7,6 +7,7 @@ import 'package:flutter_social/views/tabs/edit.dart';
 import 'package:flutter_social/views/tabs/chats.dart';
 import 'package:flutter_social/views/tabs/edit2.dart';
 import 'package:flutter_social/views/tabs/feeds.dart';
+import 'package:flutter_social/views/tabs/list.dart';
 import 'package:flutter_social/views/tabs/notifications.dart';
 import 'package:flutter_social/views/tabs/profile.dart';
 import 'package:flutter_social/views/tabs/tran.dart';
@@ -24,11 +25,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _currentIndex = 0;
   final List<Widget> _pages = [
-    FeedsPage(),
+    MyApp(),
     ChatsPage(),
     NotificationsPage(),
     EditPage(),
-    MyApp(),
     EditProfile(),
   ];
 
@@ -85,13 +85,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(LineIcons.user),
-          title: Text(
-            'Test',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
+        
       ],
 
     );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_social/_routing/routes.dart';
 import 'package:flutter_social/utils/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_social/views/tabs/list.dart';
 
 class LanguagesPage extends StatefulWidget {
   @override
@@ -40,6 +42,20 @@ class _LanguagesPageState extends State<LanguagesPage> {
       ),
     );
 
+    final firestoreInstance = Firestore.instance;
+
+    void _onPressed(lang) {
+      firestoreInstance
+          .collection("user2")
+          .where("lang", isEqualTo: lang)
+          .getDocuments()
+          .then((value) {
+        value.documents.forEach((result) {
+          print(result.data);
+        });
+      });
+    }
+
     final LBtn1 = Padding(
       padding: EdgeInsets.only(top: 20.0),
       child: Container(
@@ -56,7 +72,13 @@ class _LanguagesPageState extends State<LanguagesPage> {
           elevation: 10.0,
           shadowColor: Colors.white70,
           child: MaterialButton(
-            onPressed: () => Navigator.of(context).pushNamed(homeViewRoute),
+            onPressed: () {
+              String lang = "English";//_onPressed(lang);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ListPage(lang: lang,),
+                ));},
             child: Row(
               children: <Widget>[
                 Image.asset(
