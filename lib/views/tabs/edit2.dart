@@ -8,6 +8,7 @@ import 'package:flutter_social/views/login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
+
 final String _kanit = 'Kanit';
 
 class EditProfile extends StatefulWidget {
@@ -55,6 +56,7 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
+
   void _showActionSheet() {
     showModalBottomSheet(
         context: context,
@@ -84,6 +86,8 @@ class _EditProfileState extends State<EditProfile> {
           );
         });
   }
+
+
 
   @override
   void initState() {

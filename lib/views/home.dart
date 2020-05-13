@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_social/src/pages/index.dart';
 import 'package:flutter_social/utils/colors.dart';
+import 'package:flutter_social/views/aaa.dart';
 import 'file:///C:/Users/UMARU/AndroidStudioProjects/talk_v08/lib/views/tabs/translator.dart';
 import 'package:flutter_social/views/languages.dart';
 import 'package:flutter_social/views/tabs/edit.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_social/views/tabs/list.dart';
 import 'package:flutter_social/views/tabs/notifications.dart';
 import 'package:flutter_social/views/tabs/profile.dart';
 import 'package:flutter_social/views/tabs/tran.dart';
+import 'package:flutter_social/views/upload.dart';
 
 import 'package:line_icons/line_icons.dart';
 
@@ -27,9 +30,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final List<Widget> _pages = [
     MyApp(),
     ChatsPage(),
-    NotificationsPage(),
+    RegisterCustomer(),
     EditPage(),
     EditProfile(),
+    IndexPage(),
   ];
 
 
@@ -85,7 +89,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        
+        BottomNavigationBarItem(
+          icon: Icon(LineIcons.user),
+          title: Text(
+            'Translator',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
       ],
 
     );
