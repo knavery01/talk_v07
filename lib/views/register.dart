@@ -97,26 +97,6 @@ class _RegisterPageState extends State<RegisterPage> {
       height: 30.0,
     );
 
-//    final registerForm = Padding(
-//      padding: EdgeInsets.only(top: 30.0),
-//      child: Form(
-//        key: _formKey,
-//        child: Column(
-//          children: <Widget>[
-//            _buildFormField(nameController,'Name', LineIcons.user),
-//            formFieldSpacing,
-//            _buildFormField(emailController,'Email Address', LineIcons.envelope),
-//            formFieldSpacing,
-//            _buildFormField(telController,'Phone Number', LineIcons.mobile_phone),
-//            formFieldSpacing,
-//            _buildFormField(passwordController,'Password', LineIcons.lock),
-//            formFieldSpacing,
-//            _buildFormField(confirmpasswordController,'Confirm password', LineIcons.lock),
-//            formFieldSpacing,
-//          ],
-//        ),
-//      ),
-//    );
 
     Container buildTextFieldName() {
       return Container(

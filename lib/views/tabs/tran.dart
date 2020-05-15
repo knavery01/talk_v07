@@ -1,12 +1,19 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_social/chat.dart';
 import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/src/pages/call.dart';
 import 'package:flutter_social/views/languages.dart';
+import 'package:flutter_social/views/tabs/noti.dart';
+import 'package:flutter_social/views/tabs/notiview.dart';
 import 'package:flutter_social/views/tabs/translatorInfo.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../../main.dart';
+import '../111.dart';
 
 void main() => runApp(new MyApp());
 
@@ -122,6 +129,20 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
 
+  TextEditingController writeCon = new TextEditingController();
+  String userID = '';
+  Future _data;
+
+  inputData() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseUser user = await auth.currentUser();
+    final uid = user.uid.toString();
+    print(uid);
+    setState(() {
+      userID = uid.toString();
+    });
+  }
+
   Future<void> onJoin() async {
     // update input validation
 
@@ -133,12 +154,61 @@ class _DetailPageState extends State<DetailPage> {
       context,
       MaterialPageRoute(
         builder: (context) => CallPage(
-          channelName: widget.post.data['name'],
+          channelName: userID,
         ),
       ),
     );
 
   }
+
+  final db = Firestore.instance;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+      inputData();
+    _data = getReviwe();
+  }
+
+  Future getReviwe() async {
+    var firestore = Firestore.instance;
+    QuerySnapshot qn = await firestore.collection('user2').document(widget.post.data['uid']).collection('review').getDocuments();
+    return qn.documents;
+  }
+
+  _updateData() async {
+    await db
+        .collection('user2')
+        .document(widget.post.data['uid'])
+        .updateData({
+    }).then((value) {
+      db
+          .collection("user2")
+          .document(widget.post.data['uid'])
+          .collection("review")
+          .add({"review": writeCon.text.trim()});
+    });
+    
+  }
+
+  _call() async {
+
+    print(widget.post.data['uid']);
+    Firestore.instance.collection('user1').document(userID).snapshots();
+
+    await db
+        .collection('user2')
+        .document(widget.post.data['uid'])
+        .updateData({
+      'room': userID,
+    });
+
+  }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -146,28 +216,6 @@ class _DetailPageState extends State<DetailPage> {
       appBar: AppBar(
         title: Text(widget.post.data['name']),
       ),
-//      body: Container(
-//        child: Card(
-//          child: ListTile(
-//            onTap: (){
-//              Navigator.push(
-//                  context,
-//                  MaterialPageRoute(
-//                    builder: (context) => TranslatorInfo(),
-//                  ));
-//            },
-//            leading: CircleAvatar(
-//              backgroundImage:
-//              NetworkImage(
-//                widget.post.data['imgProfile'],
-//              ),
-//            ),
-//            title: Text(widget.post.data['name']),
-//            subtitle: Text(widget.post.data['lang']),
-//            trailing: Text(widget.post.data['status']),
-//          ),
-//        ),
-//      ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 24),
@@ -216,6 +264,7 @@ class _DetailPageState extends State<DetailPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             IconButton(icon: Icon(Icons.chat),color: Colors.blue, onPressed: (){
+
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -223,26 +272,15 @@ class _DetailPageState extends State<DetailPage> {
                                   ));
                             }),
                             IconButton(icon: Icon(Icons.call),highlightColor: Color(0xffFFECDD), onPressed: (){
-                              _handleCameraAndMic();
-                              Navigator.push(
-                                  context,
+                              _call();
+                              onJoin();
+                            }),
+                            IconButton(icon: Icon(Icons.assignment),highlightColor: Color(0xffFFECDD), onPressed: (){
+                              Navigator.push(context,
                                   MaterialPageRoute(
-                                    builder: (context) => CallPage(channelName: widget.post.data['name'],),
+                                    builder: (context) => Review(),
                                   ));
                             }),
-                            IconButton(icon: Icon(Icons.assignment),highlightColor: Color(0xffFFECDD), onPressed: null),
-//                            IconTile(
-//                              backColor: Color(0xffFFECDD),
-//
-//                            ),
-//                            IconTile(
-//                              backColor: Color(0xffFEF2F0),
-//                              imgAssetPath: "assets/call.png",
-//                            ),
-//                            IconTile(
-//                              backColor: Color(0xffEBECEF),
-//                              imgAssetPath: "assets/video_call.png",
-//                            ),
                           ],
                         )
                       ],
@@ -267,155 +305,26 @@ class _DetailPageState extends State<DetailPage> {
               SizedBox(
                 height: 24,
               ),
-              Row(
-                children: <Widget>[
-                  Column(
+              SingleChildScrollView(
+                child: Container(
+                  child: Column(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Image.asset("assets/mappin.png"),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "Address",
-                                style: TextStyle(
-                                    color: Colors.black87.withOpacity(0.7),
-                                    fontSize: 20),
-                              ),
-                              SizedBox(
-                                height: 3,
-                              ),
-                              Container(
-                                  width: MediaQuery.of(context).size.width - 268,
-                                  child: Text(
-                                    "House # 2, Road # 5, Green Road Dhanmondi, Dhaka, Bangladesh",
-                                    style: TextStyle(color: Colors.grey),
-                                  ))
-                            ],
-                          )
-                        ],
+                      TextField(
+                        controller: writeCon,
+                        decoration: InputDecoration(
+                          labelText: "Write",
+                        ),
                       ),
-                      SizedBox(
-                        height: 20,
+                      RaisedButton(
+                        child: Text("Post"),
+                        onPressed: (){
+                          _updateData();
+                        },
                       ),
-                      Row(
-                        children: <Widget>[
-                          Image.asset("assets/clock.png"),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "Daily Practict",
-                                style: TextStyle(
-                                    color: Colors.black87.withOpacity(0.7),
-                                    fontSize: 20),
-                              ),
-                              SizedBox(
-                                height: 3,
-                              ),
-                              Container(
-                                  width: MediaQuery.of(context).size.width - 268,
-                                  child: Text(
-                                    '''Monday - Friday
-Open till 7 Pm''',
-                                    style: TextStyle(color: Colors.grey),
-                                  ))
-                            ],
-                          )
-                        ],
-                      )
                     ],
                   ),
-                  Image.asset(
-                    "assets/map.png",
-                    width: 180,
-                  )
-                ],
+                ),
               ),
-              Text(
-                "Activity",
-                style: TextStyle(
-                    color: Color(0xff242424),
-                    fontSize: 28,
-                    fontWeight: FontWeight.w600),
-              ),
-              SizedBox(
-                height: 22,
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 24,horizontal: 16),
-                      decoration: BoxDecoration(
-                          color: Color(0xffFBB97C),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  color: Color(0xffFCCA9B),
-                                  borderRadius: BorderRadius.circular(16)
-                              ),
-                              child: Image.asset("assets/list.png")),
-                          SizedBox(
-                            width: 16,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width/2 - 130,
-                            child: Text(
-                              "List Of Schedule",
-                              style: TextStyle(color: Colors.white,
-                                  fontSize: 17),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 16,),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 24,horizontal: 16),
-                      decoration: BoxDecoration(
-                          color: Color(0xffA5A5A5),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  color: Color(0xffBBBBBB),
-                                  borderRadius: BorderRadius.circular(16)
-                              ),
-                              child: Image.asset("assets/list.png")),
-                          SizedBox(
-                            width: 16,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width/2 - 130,
-                            child: Text(
-                              "Doctor's Daily Post",
-                              style: TextStyle(color: Colors.white,
-                                  fontSize: 17),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )
             ],
           ),
         ),
@@ -423,8 +332,6 @@ Open till 7 Pm''',
     );
   }
 }
-
-
 
 Future<void> _handleCameraAndMic() async {
   await PermissionHandler().requestPermissions(
@@ -455,6 +362,88 @@ class IconTile extends StatelessWidget {
     );
   }
 }
+
+class Review extends StatefulWidget {
+
+  @override
+  _ReviewState createState() => _ReviewState();
+}
+
+class _ReviewState extends State<Review> {
+
+  String message;
+  String title;
+  String channelId = "1000";
+  String channelName = "FLUTTER_NOTIFICATION_CHANNEL";
+  String channelDescription = "FLUTTER_NOTIFICATION_CHANNEL_DETAIL";
+
+  @override
+  initState() {
+    message = "No message.";
+
+    var initializationSettingsAndroid =
+    AndroidInitializationSettings('ic_launcher');
+
+    var initializationSettingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: (id, title, body, payload) {
+          print("onDidReceiveLocalNotification called.");
+        });
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (payload) {
+          // when user tap on notification.
+          print("onSelectNotification called.");
+          setState(() {
+            message = payload;
+          });
+        });
+    super.initState();
+  }
+
+  sendNotification() async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails('10000',
+        'FLUTTER_NOTIFICATION_CHANNEL', 'FLUTTER_NOTIFICATION_CHANNEL_DETAIL',
+        importance: Importance.Max, priority: Priority.High);
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+
+    var platformChannelSpecifics = NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(111, 'Hello, benznest.',
+        'This is a your notifications. ', platformChannelSpecifics,
+        payload: 'I just haven\'t Met You Yet');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('111'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              message,
+              style: TextStyle(fontSize: 24),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          sendNotification();
+        },
+        tooltip: 'Increment',
+        child: Icon(Icons.send),
+      ),
+    );
+  }
+}
+
 
 
 
