@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     MyApp(),
     ChatsPage(),
     RegisterCustomer(),
-    EditPage(),
+    EditProfile2(),
     EditProfile(),
     IndexPage(),
   ];

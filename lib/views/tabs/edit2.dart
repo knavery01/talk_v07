@@ -9,14 +9,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 
+
 final String _kanit = 'Kanit';
 
-class EditProfile extends StatefulWidget {
+class EditProfile2 extends StatefulWidget {
   @override
-  _EditProfileState createState() => _EditProfileState();
+  _EditProfile2State createState() => _EditProfile2State();
 }
 
-class _EditProfileState extends State<EditProfile> {
+class _EditProfile2State extends State<EditProfile2> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
@@ -87,6 +88,20 @@ class _EditProfileState extends State<EditProfile> {
         });
   }
 
+  TextEditingController _controller = TextEditingController();
+  DocumentSnapshot _currentDocument;
+
+
+  final db = Firestore.instance;
+  _updateData() async {
+    await db
+        .collection('user1')
+        .document(userID)
+        .updateData({
+      'name': nameController.text.trim(),
+      'tel': telController.text.trim(),
+        });
+  }
 
 
   @override
@@ -172,27 +187,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
               SizedBox(height: 12),
-//            Row(
-//              mainAxisAlignment: MainAxisAlignment.center,
-//              children: <Widget>[
-//                Text(firstname,style: TextStyle(fontFamily: _kanit, fontSize: 22.0),),
-//                SizedBox(width: 20.0),
-//                Text(lastname,style: TextStyle(fontFamily: _kanit, fontSize: 22.0),),
-//              ],
-//            ),
               SizedBox(height: 12),
-//            _form(
-//              title: 'ชื่อ',
-//              content: name,
-//            ),
-//            _form(
-//              title: 'tel',
-//              content: tel,
-//            ),
-//            _form(
-//              title: 'อีเมลล์',
-//              content: email,
-//            ),
               buildTextFieldName(name),
               buildTextFieldTel(tel),
              buildTextFieldEmail(email),
@@ -218,7 +213,10 @@ class _EditProfileState extends State<EditProfile> {
                                 fontSize: 18.0,
                               ),
                             ),
-                            onPressed: _signout,
+                            onPressed: (){
+                              _updateData();
+                            },
+
                           ),
                           decoration: BoxDecoration(
                             boxShadow: [
@@ -352,6 +350,7 @@ class _EditProfileState extends State<EditProfile> {
         decoration: BoxDecoration(
             color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
         child: TextField(
+          readOnly: true,
             controller: emailController,
             decoration: InputDecoration(
                 hintText: email,
