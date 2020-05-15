@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_social/_routing/routes.dart';
 import 'package:flutter_social/utils/colors.dart';
 import 'package:flutter_social/views/home.dart';
+import 'package:flutter_social/views/languages.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:flutter/services.dart';
 
@@ -35,7 +36,11 @@ class _LoginPageState extends State<LoginPage> {
     ).then((user) {
       //print("signed in ${user.email}");
       checkAuth(context);
-      Navigator.pushNamed(context, languagesViewRoute);// add here
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ));// add here
     }).catchError((error) {
       print(error.message);
       scaffoldKey.currentState.showSnackBar(SnackBar(

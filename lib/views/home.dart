@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_social/src/pages/index.dart';
 import 'package:flutter_social/utils/colors.dart';
@@ -20,7 +21,9 @@ import 'package:line_icons/line_icons.dart';
 
 
 class HomePage extends StatefulWidget {
+  final FirebaseUser user;
 
+  const HomePage({Key key, this.user}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }

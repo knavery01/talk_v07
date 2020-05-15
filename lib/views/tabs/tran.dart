@@ -1,6 +1,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_social/chat.dart';
+import 'package:flutter_social/models/user.dart';
 import 'package:flutter_social/src/pages/call.dart';
 import 'package:flutter_social/views/languages.dart';
 import 'package:flutter_social/views/tabs/translatorInfo.dart';
@@ -213,7 +215,13 @@ class _DetailPageState extends State<DetailPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            IconButton(icon: Icon(Icons.chat),color: Colors.blue, onPressed: null),
+                            IconButton(icon: Icon(Icons.chat),color: Colors.blue, onPressed: (){
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Chat(),
+                                  ));
+                            }),
                             IconButton(icon: Icon(Icons.call),highlightColor: Color(0xffFFECDD), onPressed: (){
                               _handleCameraAndMic();
                               Navigator.push(
