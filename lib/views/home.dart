@@ -5,15 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_social/models/slide.dart';
 import 'package:flutter_social/src/pages/index.dart';
 import 'package:flutter_social/utils/colors.dart';
-import 'file:///C:/Users/UMARU/AndroidStudioProjects/talk_v08/lib/models/updateInfo.dart';
-import 'file:///C:/Users/UMARU/AndroidStudioProjects/talk_v08/lib/views/tabs/translator.dart';
-import 'package:flutter_social/views/languages.dart';
 import 'package:flutter_social/views/tabs/edit.dart';
-
-import 'package:flutter_social/views/tabs/chats.dart';
-import 'package:flutter_social/views/tabs/edit2.dart';
 import 'package:flutter_social/views/tabs/tran.dart';
 import 'package:flutter_social/views/upload.dart';
 
@@ -89,7 +84,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     MyApp(),
     RegisterCustomer(),
     RegisterCustomer(),
-    EditProfile2(),
     EditProfile(),
     IndexPage(),
   ];
@@ -160,8 +154,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
 
     return Scaffold(
-      bottomNavigationBar: bottomNavBar,
-      body: _pages[_currentIndex]
+//      bottomNavigationBar: bottomNavBar,
+          appBar: AppBar(
+            title: Text('Home'),
+          ),
+          body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Home Screen'),
+                ],
+              )
+          ),
+          drawer: SideMenu(),
 
     );
 

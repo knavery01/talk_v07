@@ -5,7 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_social/views/login.dart';
+import 'package:flutter_social/models/slide.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -42,14 +43,6 @@ class _EditProfileState extends State<EditProfile> {
     setState(() {
       userID = uid.toString();
     });
-  }
-
-  _signout() {
-    FirebaseAuth.instance
-        .signOut()
-        .then((result) => Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginPage())))
-        .catchError((err) => print(err));
   }
 
 
@@ -138,9 +131,11 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: SideMenu(),
       appBar: AppBar(
         title: Text(
           'โปรไฟล์',
@@ -280,7 +275,9 @@ class _EditProfileState extends State<EditProfile> {
                                 fontSize: 18.0,
                               ),
                             ),
-                            onPressed: _signout,
+                            onPressed: (){
+
+                            },
                           ),
                           decoration: BoxDecoration(
                             boxShadow: [
@@ -303,46 +300,6 @@ class _EditProfileState extends State<EditProfile> {
                       ],
                     ),
                     SizedBox(height: 20.0,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          width: 100.0,
-                          child: MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Text(
-                              'Logout',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: _kanit,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                            onPressed: _signout,
-                          ),
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 20.0,
-                                // has the effect of softening the shadow
-                                spreadRadius: 4.0,
-                                // has the effect of extending the shadow
-                                offset: Offset(
-                                  8.0, // horizontal, move right 10
-                                  8.0, // vertical, move down 10
-                                ),
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(30),
-                            color: Colors.red,
-                          ),
-                        ),
-
-                      ],
-                    ),
                     SizedBox(height: 20.0,),
                   ],
                 ),
@@ -363,7 +320,6 @@ class _EditProfileState extends State<EditProfile> {
         child: TextField(
             controller: nameController,
             decoration: InputDecoration(
-              hintText: name,
               prefixIcon: Icon(Icons.account_box),
               labelText: "name",
             ),
@@ -409,38 +365,4 @@ class _EditProfileState extends State<EditProfile> {
             style: TextStyle(fontSize: 18)));
   }
 
-  Widget _form({
-    title,
-    content,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(
-              fontFamily: _kanit,
-              fontWeight: FontWeight.bold,
-              fontSize: 22.0,
-            ),
-          ),
-          Text(
-            content,
-            style: TextStyle(
-              fontFamily: _kanit,
-              fontSize: 18.0,
-              color: Colors.black54,
-            ),
-          ),
-          Divider(
-            thickness: 2,
-            color: Colors.black45,
-          ),
-        ],
-      ),
-    );
-  }
 }

@@ -4,15 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_social/models/chat.dart';
+import 'package:flutter_social/models/slide.dart';
 
 
 import 'package:flutter_social/src/pages/call.dart';
-import 'package:flutter_social/views/languages.dart';
+import 'package:flutter_social/views/tabs/languages.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
-import '../111.dart';
+
 
 void main() => runApp(new MyApp());
 
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: new MyHomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -41,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      drawer: SideMenu(),
       appBar: new AppBar(
         title: new Text("Translator"),
         actions: <Widget>[
@@ -303,26 +306,6 @@ class _DetailPageState extends State<DetailPage> {
               ),
               SizedBox(
                 height: 24,
-              ),
-              SingleChildScrollView(
-                child: Container(
-                  child: Column(
-                    children: <Widget>[
-                      TextField(
-                        controller: writeCon,
-                        decoration: InputDecoration(
-                          labelText: "Write",
-                        ),
-                      ),
-                      RaisedButton(
-                        child: Text("Post"),
-                        onPressed: (){
-                          _updateData();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ],
           ),

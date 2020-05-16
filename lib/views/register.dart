@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_social/utils/colors.dart';
 import 'package:flutter_social/views/login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -187,11 +188,11 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'Register Customer',
+          'Register',
           style: TextStyle(
               fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.blueGrey[400],
+        backgroundColor: primaryColor,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -265,7 +266,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           controller: _Name,
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Plese check First Name';
+                              return 'Plese check Your Name';
                             } else {
                               return null;
                             }
@@ -275,9 +276,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               Icons.person_outline,
                               color: Colors.blueGrey[200],
                             ),
-                            hintText: 'First Name',
+                            hintText: 'Name',
                             focusColor: Colors.black,
-                            labelText: 'First Name',
+                            labelText: 'Name',
                             labelStyle: TextStyle(color: Colors.blueGrey[200]),
                             hintStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
@@ -428,7 +429,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 .size
                                 .width,
                             child: RaisedButton(
-                              color: Colors.blueGrey[400],
+                              color: Colors.green,
                               onPressed: () {
                                 if (_formKey.currentState.validate()) {
                                   signUp(context);

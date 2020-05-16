@@ -95,7 +95,7 @@ class LandingPage extends StatelessWidget {
 
     final buttons = Padding(
       padding: EdgeInsets.only(
-        top: 30.0,
+        top: 5.0,
         bottom: 30.0,
         left: 30.0,
         right: 30.0,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_social/views/tabs/noti.dart';
+import 'package:flutter_social/models/noti.dart';
 
 class notiView extends StatefulWidget {
   @override
