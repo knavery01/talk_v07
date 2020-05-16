@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_social/_routing/routes.dart';
 import 'package:flutter_social/utils/colors.dart';
 import 'package:flutter_social/views/home.dart';
-import 'package:flutter_social/views/languages.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,6 +19,10 @@ class _LoginPageState extends State<LoginPage> {
 
   final _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser currentUser;
+
+  SharedPreferences prefs;
+
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -30,16 +34,18 @@ class _LoginPageState extends State<LoginPage> {
 
 
   Future<FirebaseUser> signIn( )async {
-    final FirebaseUser user = await _auth.signInWithEmailAndPassword(
+    prefs = await SharedPreferences.getInstance();
+    final FirebaseUser firebaseUser = await _auth.signInWithEmailAndPassword(
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
     ).then((user) {
-      //print("signed in ${user.email}");
+
       checkAuth(context);
+
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(),
+            builder: (context) => HomePage(currentUserId: prefs.getString('id')),
           ));// add here
     }).catchError((error) {
       print(error.message);
@@ -50,14 +56,16 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-
-
   @override
   Future checkAuth(BuildContext context) async {
     FirebaseUser user = await _auth.currentUser();
     if (user != null) {
       print("Already singed-in with");
-      Navigator.pushNamed(context, homeViewRoute);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ));// add here
     }
   }
 

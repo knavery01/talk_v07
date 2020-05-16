@@ -3,17 +3,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Chat extends StatefulWidget {
+class Chat2 extends StatefulWidget {
   static const String id = "CHAT";
   final FirebaseUser user;
 
 
-  const Chat({Key key, this.user}) : super(key: key);
+  const Chat2({Key key, this.user}) : super(key: key);
   @override
-  _ChatState createState() => _ChatState();
+  _Chat2State createState() => _Chat2State();
 }
 
-class _ChatState extends State<Chat> {
+class _Chat2State extends State<Chat2> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _firestore = Firestore.instance;
 

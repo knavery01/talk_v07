@@ -1,18 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_social/src/pages/index.dart';
 import 'package:flutter_social/utils/colors.dart';
-import 'package:flutter_social/views/aaa.dart';
+import 'file:///C:/Users/UMARU/AndroidStudioProjects/talk_v08/lib/models/updateInfo.dart';
 import 'file:///C:/Users/UMARU/AndroidStudioProjects/talk_v08/lib/views/tabs/translator.dart';
 import 'package:flutter_social/views/languages.dart';
 import 'package:flutter_social/views/tabs/edit.dart';
 
 import 'package:flutter_social/views/tabs/chats.dart';
 import 'package:flutter_social/views/tabs/edit2.dart';
-import 'package:flutter_social/views/tabs/feeds.dart';
-import 'package:flutter_social/views/tabs/list.dart';
-import 'package:flutter_social/views/tabs/notifications.dart';
-import 'package:flutter_social/views/tabs/profile.dart';
 import 'package:flutter_social/views/tabs/tran.dart';
 import 'package:flutter_social/views/upload.dart';
 
@@ -22,17 +23,71 @@ import 'package:line_icons/line_icons.dart';
 
 class HomePage extends StatefulWidget {
   final FirebaseUser user;
+  final String currentUserId;
 
-  const HomePage({Key key, this.user}) : super(key: key);
+  const HomePage({Key key, this.user, @required this.currentUserId}) : super(key: key);
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(currentUserId: currentUserId);
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  _HomePageState({Key key, @required this.currentUserId});
+  String currentUserId;
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    inputData();
+    configLocalNotification();
+    super.initState();
+  }
+
+  inputData() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseUser user = await auth.currentUser();
+    final uid = user.uid.toString();
+    print(uid);
+    setState(() {
+      currentUserId = uid.toString();
+    });
+  }
+
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  void configLocalNotification() {
+    var initializationSettingsAndroid = new AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  void showNotification(message) async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+      Platform.isAndroid ? 'com.dfa.flutterchatdemo' : 'com.duytq.flutterchatdemo',
+      'Flutter chat demo',
+      'your channel description',
+      playSound: true,
+      enableVibration: true,
+      importance: Importance.Max,
+      priority: Priority.High,
+    );
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    var platformChannelSpecifics =
+    new NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+    print(message);
+
+    await flutterLocalNotificationsPlugin.show(
+        0, message['title'].toString(), message['body'].toString(), platformChannelSpecifics,
+        payload: json.encode(message));
+
+  }
+
+
   final List<Widget> _pages = [
     MyApp(),
-    ChatsPage(),
+    RegisterCustomer(),
     RegisterCustomer(),
     EditProfile2(),
     EditProfile(),
@@ -43,6 +98,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      print(currentUserId);
     });
   }
 

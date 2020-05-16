@@ -3,13 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_social/chat.dart';
-import 'package:flutter_social/models/user.dart';
+import 'package:flutter_social/models/chat.dart';
+
+
 import 'package:flutter_social/src/pages/call.dart';
 import 'package:flutter_social/views/languages.dart';
-import 'package:flutter_social/views/tabs/noti.dart';
-import 'package:flutter_social/views/tabs/notiview.dart';
-import 'package:flutter_social/views/tabs/translatorInfo.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../main.dart';
@@ -201,7 +200,7 @@ class _DetailPageState extends State<DetailPage> {
         .collection('user2')
         .document(widget.post.data['uid'])
         .updateData({
-      'room': userID,
+      "room" : FieldValue.arrayUnion([userID])
     });
 
   }
@@ -268,7 +267,7 @@ class _DetailPageState extends State<DetailPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Chat(),
+                                    builder: (context) => Chat(peerAvatar: widget.post.data['imgProfile'],peerId: widget.post.data['uid'],peerName: widget.post.data['name'],),
                                   ));
                             }),
                             IconButton(icon: Icon(Icons.call),highlightColor: Color(0xffFFECDD), onPressed: (){

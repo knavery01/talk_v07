@@ -185,7 +185,7 @@ class _DetailPageState extends State<DetailPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Chat(),
+                                    builder: (context) => Chat2(),
                                   ));
                             }),
                             IconButton(icon: Icon(Icons.call),highlightColor: Color(0xffFFECDD), onPressed: (){

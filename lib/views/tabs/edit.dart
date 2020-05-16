@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 
 
 
-import '../aaa.dart';
+import '../../models/updateInfo.dart';
 
 
 
@@ -51,6 +51,8 @@ class _EditProfileState extends State<EditProfile> {
         context, MaterialPageRoute(builder: (context) => LoginPage())))
         .catchError((err) => print(err));
   }
+
+
 
   Future<void> captureImage(ImageSource imageSource) async {
     try {
