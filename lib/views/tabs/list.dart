@@ -248,7 +248,7 @@ class _DetailPageState extends State<DetailPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => CallPage(channelName: widget.post.data['uid']),
+                                    builder: (context) => CallPage(channelName: userID),
                                   ));
                             }),
                             IconButton(icon: Icon(Icons.assignment),highlightColor: Color(0xffFFECDD), onPressed: null),

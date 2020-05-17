@@ -119,7 +119,14 @@ class _LanguagesPageState extends State<LanguagesPage> {
           elevation: 10.0,
           shadowColor: Colors.white70,
           child: MaterialButton(
-            onPressed: () => Navigator.of(context).pushNamed(homeViewRoute),
+            onPressed: () {
+              String lang = "Chiness";//_onPressed(lang);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ListPage(lang: lang,),
+                  ));
+            },
             child: Row(
               children: <Widget>[
                 Image.asset(
@@ -160,7 +167,14 @@ class _LanguagesPageState extends State<LanguagesPage> {
           elevation: 10.0,
           shadowColor: Colors.white70,
           child: MaterialButton(
-            onPressed: () => Navigator.of(context).pushNamed(homeViewRoute),
+            onPressed: () {
+              String lang = "Malayu";//_onPressed(lang);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ListPage(lang: lang,),
+                  ));
+            },
             child: Row(
               children: <Widget>[
                 Image.asset(
@@ -201,7 +215,14 @@ class _LanguagesPageState extends State<LanguagesPage> {
           elevation: 10.0,
           shadowColor: Colors.white70,
           child: MaterialButton(
-            onPressed: () => Navigator.of(context).pushNamed(homeViewRoute),
+            onPressed: () {
+              String lang = "Korea";//_onPressed(lang);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ListPage(lang: lang,),
+                  ));
+            },
             child: Row(
               children: <Widget>[
                 Image.asset(
@@ -242,7 +263,14 @@ class _LanguagesPageState extends State<LanguagesPage> {
           elevation: 10.0,
           shadowColor: Colors.white70,
           child: MaterialButton(
-            onPressed: () => Navigator.of(context).pushNamed(homeViewRoute),
+            onPressed: () {
+              String lang = "Laos";//_onPressed(lang);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ListPage(lang: lang,),
+                  ));
+            },
             child: Row(
               children: <Widget>[
                 Image.asset(
@@ -283,7 +311,14 @@ class _LanguagesPageState extends State<LanguagesPage> {
           elevation: 10.0,
           shadowColor: Colors.white70,
           child: MaterialButton(
-            onPressed: () => Navigator.of(context).pushNamed(homeViewRoute),
+            onPressed: () {
+              String lang = "Japan";//_onPressed(lang);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ListPage(lang: lang,),
+                  ));
+            },
             child: Row(
               children: <Widget>[
                 Image.asset(

@@ -2,19 +2,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_social/models/slide.dart';
-
+import 'package:flutter_social/views/login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-
-
-
-import '../../models/updateInfo.dart';
-
-
 
 final String _kanit = 'Kanit';
 
@@ -33,7 +25,6 @@ class _EditProfileState extends State<EditProfile> {
   String userID = '';
   List<DocumentSnapshot> snapshots;
   String img, name, tel, email;
-  NewUpdateInfo updateInfo = new NewUpdateInfo();
 
   inputData() async {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -45,7 +36,13 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-
+  _signout() {
+    FirebaseAuth.instance
+        .signOut()
+        .then((result) => Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginPage())))
+        .catchError((err) => print(err));
+  }
 
   Future<void> captureImage(ImageSource imageSource) async {
     try {
@@ -57,27 +54,6 @@ class _EditProfileState extends State<EditProfile> {
       print(e);
     }
   }
-
-  Future uploadImage(BuildContext context) async {
-    String fileName = _image.path;
-    final StorageReference firebaseStorageRef = FirebaseStorage.instance
-        .ref()
-        .child('CustomerProfile/${fileName.toString()}');
-    StorageUploadTask task = firebaseStorageRef.putFile(_image);
-    StorageTaskSnapshot snapshotTask = await task.onComplete;
-    String downloadUrl = await snapshotTask.ref.getDownloadURL();
-    if (downloadUrl != null) {
-      updateInfo.updateProfilePic(downloadUrl.toString(), context).then((val) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => EditProfile()),
-            ModalRoute.withName('/'));
-      }).catchError((e) {
-        print('upload error ${e}');
-      });
-    }
-  }
-
 
   void _showActionSheet() {
     showModalBottomSheet(
@@ -109,10 +85,6 @@ class _EditProfileState extends State<EditProfile> {
         });
   }
 
-  TextEditingController _controller = TextEditingController();
-  DocumentSnapshot _currentDocument;
-
-
   final db = Firestore.instance;
   _updateData() async {
     await db
@@ -131,11 +103,9 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: SideMenu(),
       appBar: AppBar(
         title: Text(
           'โปรไฟล์',
@@ -210,7 +180,9 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
               SizedBox(height: 12),
+
               SizedBox(height: 12),
+
               buildTextFieldName(name),
               buildTextFieldTel(tel),
               buildTextFieldEmail(email),
@@ -236,11 +208,7 @@ class _EditProfileState extends State<EditProfile> {
                                 fontSize: 18.0,
                               ),
                             ),
-                            onPressed: (){
-                              _updateData();
-                              uploadImage(context);
-                            },
-
+                            onPressed: _updateData,
                           ),
                           decoration: BoxDecoration(
                             boxShadow: [
@@ -275,9 +243,7 @@ class _EditProfileState extends State<EditProfile> {
                                 fontSize: 18.0,
                               ),
                             ),
-                            onPressed: (){
-
-                            },
+                            onPressed: _signout,
                           ),
                           decoration: BoxDecoration(
                             boxShadow: [
@@ -318,13 +284,23 @@ class _EditProfileState extends State<EditProfile> {
         decoration: BoxDecoration(
             color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
         child: TextField(
+          onSubmitted: (String value){
+            setState(() {
+              nameController.text = value;
+            });
+          },
             controller: nameController,
             decoration: InputDecoration(
+              hintText: name,
               prefixIcon: Icon(Icons.account_box),
               labelText: "name",
             ),
             keyboardType: TextInputType.text,
-            style: TextStyle(fontSize: 18,)));
+            style: TextStyle(fontSize: 18,),
+
+        ),
+
+    );
   }
 
   Container buildTextFieldEmail(email) {
@@ -335,7 +311,6 @@ class _EditProfileState extends State<EditProfile> {
         decoration: BoxDecoration(
             color: Colors.yellow[50], borderRadius: BorderRadius.circular(16)),
         child: TextField(
-            readOnly: true,
             controller: emailController,
             decoration: InputDecoration(
               hintText: email,
@@ -365,4 +340,38 @@ class _EditProfileState extends State<EditProfile> {
             style: TextStyle(fontSize: 18)));
   }
 
+  Widget _form({
+    title,
+    content,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(
+              fontFamily: _kanit,
+              fontWeight: FontWeight.bold,
+              fontSize: 22.0,
+            ),
+          ),
+          Text(
+            content,
+            style: TextStyle(
+              fontFamily: _kanit,
+              fontSize: 18.0,
+              color: Colors.black54,
+            ),
+          ),
+          Divider(
+            thickness: 2,
+            color: Colors.black45,
+          ),
+        ],
+      ),
+    );
+  }
 }
